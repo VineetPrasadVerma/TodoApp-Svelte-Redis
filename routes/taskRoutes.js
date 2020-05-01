@@ -8,8 +8,8 @@ router.get('/', taskQueries.getAllTasks)
 // CREATE ROUTE
 router.post('/', taskQueries.createTask)
 
-// // UPDATE ROUTE
-// router.put('/:id', taskQueries.updateTask)
+// UPDATE ROUTE
+router.put('/:id', taskQueries.updateTask)
 
 // // DELETE ROUTE
 // router.delete('/:id', taskQueries.deleteTask)
