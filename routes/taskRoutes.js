@@ -12,6 +12,6 @@ router.post('/', taskQueries.createTask)
 router.put('/:taskid', taskQueries.updateTask)
 
 // DELETE ROUTE
-router.delete('/:id', taskQueries.deleteTask)
+router.delete('/:taskid', taskQueries.deleteTask)
 
 module.exports = router

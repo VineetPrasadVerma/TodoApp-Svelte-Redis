@@ -62,4 +62,23 @@ taskQueries.updateTask = async (req, res) => {
   }
 }
 
+taskQueries.deleteTask = async (req, res) => {
+  try {
+    const taskId = req.params.taskid
+
+    const deletedTask = redisCommands.lrem('taskIds', 0, taskId)
+
+    if (!deletedTask) {
+      return res.status(404).json({ message: `Can't find task with id ${taskId}` })
+    }
+
+    await redisCommands.hdel(taskId, 'taskName')
+    await redisCommands.hdel(taskId, 'subTasks')
+
+    res.status(200).json({ message: `Task deleted with ID: ${taskId}` })
+  } catch (e) {
+    res.status(500).json({ message: `Can't delete task of ${req.params.id} id` })
+  }
+}
+
 module.exports = { taskQueries }
