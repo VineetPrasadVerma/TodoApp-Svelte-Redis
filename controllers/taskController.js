@@ -17,7 +17,7 @@ taskQueries.getAllTasks = async (req, res) => {
 
     res.status(200).json(tasks)
   } catch (e) {
-    res.status(500).json({ taskCount: 0, message: 'Can\'t get lists' })
+    res.status(500).json({ taskCount: 0, message: 'Can\'t get tasks' })
   }
 }
 
@@ -39,20 +39,26 @@ taskQueries.createTask = async (req, res) => {
 
     res.status(201).json({ taskId: id, taskName })
   } catch (e) {
-    res.status(500).json({ message: 'Can\'t add list' })
+    res.status(500).json({ message: 'Can\'t add Task' })
   }
 }
 
-taskQueries.updateList = async (req, res) => {
+taskQueries.updateTask = async (req, res) => {
   try {
-    const listId = Number(req.params.id)
-    const listName = req.body.listName
-    const result = await pool.query('UPDATE LISTS SET list_name = $1 WHERE list_id = $2', [listName, listId])
-    // console.log(result)
-    if (result.rowCount === 0) return res.status(404).json({ message: `can't find list with id ${listId}` })
-    res.status(200).json({ message: `List modified with ID: ${listId}` })
+    const taskId = req.params.taskid
+    const taskName = req.body.taskName
+
+    const task = await redisCommands.hexists(taskId, 'taskName')
+
+    if (!task) {
+      return res.status(404).json({ message: `Can't find task with id ${taskId}` })
+    }
+
+    await redisCommands.hset(taskId, 'taskName', taskName)
+
+    res.status(200).json({ message: `Task modified with ID: ${taskId}` })
   } catch (e) {
-    res.status(500).json({ message: `Can't update list of ${req.params.id} id` })
+    res.status(500).json({ message: `Can't update task of ${req.params.id} id` })
   }
 }
 
