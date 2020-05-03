@@ -9,7 +9,7 @@ router.get('/', subTaskQueries.getAllSubtask)
 router.post('/', subTaskQueries.createSubtask)
 
 // UPDATE ROUTE
-// router.put('/:taskId', subTaskQueries.updateTask)
+router.put('/:subtaskid', subTaskQueries.updateSubtask)
 
 // DELETE ROUTE
 // router.delete('/:taskId', subTaskQueries.deleteTask)

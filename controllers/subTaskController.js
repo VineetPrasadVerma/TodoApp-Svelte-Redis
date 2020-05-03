@@ -64,4 +64,34 @@ subTaskQueries.createSubtask = async (req, res) => {
   }
 }
 
+subTaskQueries.updateSubtask = async (req, res) => {
+  try {
+    const taskId = req.params.taskid
+    const subTaskId = req.params.subtaskid
+
+    const updatedSubTask = req.body.subTask
+
+    const task = await redisCommands.exists(taskId)
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task doesn\'t exist' })
+    }
+
+    const subTasks = JSON.parse(await redisCommands.hget(taskId, 'subTasks'))
+
+    const index = subTasks.findIndex(task => task.id == subTaskId)
+
+    if (index) {
+      subTasks[index] = updatedSubTask
+      await redisCommands.hset(taskId, 'subTasks', JSON.stringify(subTasks))
+      return res.status(200).send({ message: `Subtask modified with ID: ${subTaskId}` })
+    }
+
+    return res.status(404).json({ message: `Can't find subtask with id ${subTaskId}` })
+  } catch (e) {
+    console.log(e)
+    res.status(500).json({ message: `Can't update subtask of ${req.params.subtaskid} id` })
+  }
+}
+
 module.exports = { subTaskQueries }
