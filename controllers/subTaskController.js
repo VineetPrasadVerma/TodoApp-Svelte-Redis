@@ -122,4 +122,28 @@ subTaskQueries.deleteSubtask = async (req, res) => {
   }
 }
 
+subTaskQueries.deleteCompletedSubtasks = async (req, res) => {
+  try {
+    const taskId = req.params.taskid
+
+    const task = await redisCommands.exists(taskId)
+
+    if (!task) {
+      return res.status(404).json({ message: 'Subtask doesn\'t exist' })
+    }
+
+    let subTasks = JSON.parse(await redisCommands.hget(taskId, 'subTasks'))
+    const totalSubtasks = subTasks.length
+    const filteredSubtasks = subTasks.filter(task => task.completed === false)
+    subTasks = filteredSubtasks
+
+    if (subTasks.length === totalSubtasks) return res.status(404).json({ message: 'Don\'t have any completed subtask' })
+
+    await redisCommands.hset(taskId, 'subTasks', JSON.stringify(subTasks))
+    return res.status(200).send({ message: 'Subtasks deleted' })
+  } catch (e) {
+    res.status(500).json({ message: 'Can\'t delete subtasks ' })
+  }
+}
+
 module.exports = { subTaskQueries }

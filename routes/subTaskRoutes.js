@@ -15,6 +15,6 @@ router.put('/:subtaskid', subTaskQueries.updateSubtask)
 router.delete('/:subtaskid', subTaskQueries.deleteSubtask)
 
 // DELETE MORE THAN ONE ROUTE
-// router.delete('/', subTaskQueries.deleteCompletedTasks)
+router.delete('/', subTaskQueries.deleteCompletedSubtasks)
 
 module.exports = router
