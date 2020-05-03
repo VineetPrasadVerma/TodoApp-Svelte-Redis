@@ -12,7 +12,7 @@ router.post('/', subTaskQueries.createSubtask)
 router.put('/:subtaskid', subTaskQueries.updateSubtask)
 
 // DELETE ROUTE
-// router.delete('/:taskId', subTaskQueries.deleteTask)
+router.delete('/:subtaskid', subTaskQueries.deleteSubtask)
 
 // DELETE MORE THAN ONE ROUTE
 // router.delete('/', subTaskQueries.deleteCompletedTasks)

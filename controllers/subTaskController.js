@@ -69,7 +69,9 @@ subTaskQueries.updateSubtask = async (req, res) => {
     const taskId = req.params.taskid
     const subTaskId = req.params.subtaskid
 
-    const updatedSubTask = req.body.subTask
+    const requestBody = req.body
+    const subTaskField = Object.keys(requestBody)[0]
+    const subTaskValue = requestBody[subTaskField]
 
     const task = await redisCommands.exists(taskId)
 
@@ -81,8 +83,8 @@ subTaskQueries.updateSubtask = async (req, res) => {
 
     const index = subTasks.findIndex(task => task.id == subTaskId)
 
-    if (index) {
-      subTasks[index] = updatedSubTask
+    if (index !== -1) {
+      Object.assign(subTasks[index], { [subTaskField]: subTaskValue })
       await redisCommands.hset(taskId, 'subTasks', JSON.stringify(subTasks))
       return res.status(200).send({ message: `Subtask modified with ID: ${subTaskId}` })
     }
@@ -91,6 +93,32 @@ subTaskQueries.updateSubtask = async (req, res) => {
   } catch (e) {
     console.log(e)
     res.status(500).json({ message: `Can't update subtask of ${req.params.subtaskid} id` })
+  }
+}
+
+subTaskQueries.deleteSubtask = async (req, res) => {
+  try {
+    const taskId = req.params.taskid
+    const subTaskId = req.params.subtaskid
+
+    const task = await redisCommands.exists(taskId)
+
+    if (!task) {
+      return res.status(404).json({ message: 'Subtask doesn\'t exist' })
+    }
+
+    const subTasks = JSON.parse(await redisCommands.hget(taskId, 'subTasks'))
+
+    const index = subTasks.findIndex(task => task.id == subTaskId)
+    if (index !== -1) {
+      subTasks.splice(index, 1)
+      await redisCommands.hset(taskId, 'subTasks', JSON.stringify(subTasks))
+      return res.status(200).send({ message: `Subtask deleted with ID: ${subTaskId}` })
+    }
+
+    return res.status(404).json({ message: `Can't find subtask with id ${subTaskId}` })
+  } catch (e) {
+    res.status(500).json({ message: `Can't delete subtask of id ${req.params.taskId}` })
   }
 }
 
