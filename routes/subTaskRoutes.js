@@ -1,20 +1,20 @@
-// const express = require('express')
-// const router = express.Router({ mergeParams: true })
-// const { subTaskQueries } = require('../controllers/subTaskController')
+const express = require('express')
+const router = express.Router({ mergeParams: true })
+const { subTaskQueries } = require('../controllers/subTaskController')
 
-// // INDEX ROUTE
-// router.get('/', subTaskQueries.getOrderedTask)
+// INDEX ROUTE
+router.get('/', subTaskQueries.getAllSubtask)
 
-// // CREATE ROUTE
-// router.post('/', subTaskQueries.createTask)
+// CREATE ROUTE
+router.post('/', subTaskQueries.createSubtask)
 
-// // UPDATE ROUTE
+// UPDATE ROUTE
 // router.put('/:taskId', subTaskQueries.updateTask)
 
-// // DELETE ROUTE
+// DELETE ROUTE
 // router.delete('/:taskId', subTaskQueries.deleteTask)
 
-// // DELETE MORE THAN ONE ROUTE
+// DELETE MORE THAN ONE ROUTE
 // router.delete('/', subTaskQueries.deleteCompletedTasks)
 
-// module.exports = router
+module.exports = router
