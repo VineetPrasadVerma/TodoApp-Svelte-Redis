@@ -70,7 +70,7 @@
   async function updateTask(id) {
     if(event.keyCode === 13){
 
-      if(taskName === ''){
+      if(updatedTaskName === ''){
         event.target.placeholder = 'Can\'t add empty Task'
         return
       }

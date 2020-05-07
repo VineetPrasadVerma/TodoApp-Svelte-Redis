@@ -50,8 +50,17 @@
 
   // onDestroy(() => console.log('destroyed',tasks))
 
+  function searchTasks(event) {
+    event.target.placeholder = ' Search | Add Lists'
+    const searchedTasks = tasks.filter(task => task.taskName.toLowerCase().includes(event.target.value.toLowerCase()))
+    $TaskStore = searchedTasks
+  }
+
   let taskName = ''
+
   async function addTask(event) {
+    searchTasks(event)
+
     if(event.keyCode === 13){
 
       if(taskName === ''){
@@ -70,9 +79,11 @@
 
       let createdTask = await fetchAPI(reqObj)
 
-      TaskStore.update(currentTasks => {
-        return [...currentTasks, createdTask]
-      })
+      if(createdTask){
+        const tasks = await readTasksDB()
+        if(tasks) $TaskStore = tasks
+        else {$TaskStore = []}
+      }
 
       taskName = ''
     }
