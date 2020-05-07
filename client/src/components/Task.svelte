@@ -2,28 +2,9 @@
   import {onMount, onDestroy} from 'svelte'
   import TaskStore from '../stores/taskStore.js'
   import TaskDetails from './TaskDetails.svelte' 
+  import {baseURL, fetchAPI} from '../shared/fetch.js'
 
   let tasks = []  
-  const baseURL = 'http://localhost:3000/tasks'
-
-  const fetchAPI = async (reqObj) => {
-    try {
-      const res = await window.fetch(reqObj.url, reqObj.init)
-      const data = await res.json()
-
-      if (res.status === 200 || res.status === 201) {
-        return data
-      } else if (res.status === 500) {
-        //  showError(res.status, data)
-        return null
-      } else if (res.status === 404) {
-        //  showError(res.status, data)
-        return null
-      }
-    } catch (error) {
-        console.log(error)
-    }
-  }
 
   const readTasksDB = async () => {
     const reqObj = {
@@ -88,6 +69,7 @@
       taskName = ''
     }
   }
+
 </script>
 
 

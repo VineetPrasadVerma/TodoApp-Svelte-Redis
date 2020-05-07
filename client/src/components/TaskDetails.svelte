@@ -2,31 +2,11 @@
   import TaskStore from '../stores/taskStore.js'
   import Icon from 'fa-svelte'
   import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons/'
+  import {baseURL, fetchAPI} from '../shared/fetch.js'
 
   export let task
   let isEditing = false
   let updatedTaskName = task.taskName
-
-  const baseURL = 'http://localhost:3000/tasks'
-
-  const fetchAPI = async (reqObj) => {
-    try {
-      const res = await window.fetch(reqObj.url, reqObj.init)
-      const data = await res.json()
-
-      if (res.status === 200 || res.status === 201) {
-        return data
-      } else if (res.status === 500) {
-        //  showError(res.status, data)
-        return null
-      } else if (res.status === 404) {
-        //  showError(res.status, data)
-        return null
-      }
-    } catch (error) {
-        console.log(error)
-    }
-  }
 
   const readTasksDB = async () => {
     const reqObj = {
