@@ -34,7 +34,7 @@
     }
 
     let tasks = await fetchAPI(reqObj)
-    if (tasks != null && tasks.rowCount !== 0) {
+    if (tasks != null && tasks.taskCount !== 0) {
       return tasks
     } else {
       tasks = []
@@ -50,17 +50,44 @@
 
   // onDestroy(() => console.log('destroyed',tasks))
 
+  let taskName = ''
+  async function addTask(event) {
+    if(event.keyCode === 13){
+
+      if(taskName === ''){
+        event.target.placeholder = 'Can\'t add empty Task'
+        return
+      }
+
+      const reqObj = {
+        url: baseURL + '/',
+        init: {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ taskName: taskName })
+        }
+      }
+
+      let createdTask = await fetchAPI(reqObj)
+
+      TaskStore.update(currentTasks => {
+        return [...currentTasks, createdTask]
+      })
+
+      taskName = ''
+    }
+  }
 </script>
 
 
 <div id="lists-container">
   <h1 id='todo-heading'>TODOS</h1>
 
-  <input id="add-list-input" placeholder=" Search | Add Lists" type="text">
+  <input id="add-list-input" placeholder=" Search | Add Lists" type="text" on:keyup={() => addTask(event)} bind:value={taskName}>
 
   <div id="show-lists-container">
     {#each $TaskStore as task (task.taskId)}
-      <TaskDetails {task} />
+      <TaskDetails {task}/>
     {/each}
   </div>
 
