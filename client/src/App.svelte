@@ -1,9 +1,9 @@
 <script>
-	let name = 'Vineet'
+	import Task from './components/Task.svelte'
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
+	<Task />
 </main>
 
 <style>
