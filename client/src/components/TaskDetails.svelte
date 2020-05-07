@@ -3,8 +3,13 @@
   import Icon from 'fa-svelte'
   import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
+  import { createEventDispatcher } from 'svelte';
+
 
   export let task
+
+  const dispatch = createEventDispatcher();
+
   let isEditing = false
   let updatedTaskName = task.taskName
 
@@ -17,6 +22,7 @@
     }
 
     let tasks = await fetchAPI(reqObj)
+    dispatch('updateAllTasks', tasks)
     if (tasks != null && tasks.taskCount !== 0) {
       return tasks
     } else {
@@ -80,15 +86,15 @@
 </script>
 
 <div id={task.taskId}>
-    <span id='taskName'>
+    <div id='taskName'>
         {#if isEditing}
           <input type="text" bind:value={updatedTaskName} autofocus on:keyup={() => updateTask(task.taskId)}>
         {:else}
-            {task.taskName}
+            <span>{task.taskName} </span>
             <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>
             <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
         {/if}
-    </span>
+    </div>
     
 </div>
 

@@ -4,7 +4,7 @@
   import TaskDetails from './TaskDetails.svelte' 
   import {baseURL, fetchAPI} from '../shared/fetch.js'
 
-  let tasks = []  
+  let allTasks = []  
 
   const readTasksDB = async () => {
     const reqObj = {
@@ -16,15 +16,17 @@
 
     let tasks = await fetchAPI(reqObj)
     if (tasks != null && tasks.taskCount !== 0) {
+      allTasks = tasks
       return tasks
     } else {
       tasks = []
+      allTasks = []
       return null
     }
   }
 
   onMount(async () => {        
-    tasks = await readTasksDB()
+    const tasks = await readTasksDB()
     if(tasks) $TaskStore = tasks
     // console.log('created', tasks)
   })
@@ -33,7 +35,7 @@
 
   function searchTasks(event) {
     event.target.placeholder = ' Search | Add Lists'
-    const searchedTasks = tasks.filter(task => task.taskName.toLowerCase().includes(event.target.value.toLowerCase()))
+    const searchedTasks = allTasks.filter(task => task.taskName.toLowerCase().includes(event.target.value.toLowerCase()))
     $TaskStore = searchedTasks
   }
 
@@ -70,6 +72,10 @@
     }
   }
 
+  function updateAllTasks(e) {
+    allTasks = e.detail
+  }
+
 </script>
 
 
@@ -80,7 +86,7 @@
 
   <div id="show-lists-container">
     {#each $TaskStore as task (task.taskId)}
-      <TaskDetails {task}/>
+      <TaskDetails {task} on:updateAllTasks={updateAllTasks}/>
     {/each}
   </div>
 
