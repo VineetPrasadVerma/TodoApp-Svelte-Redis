@@ -9,7 +9,6 @@
 <style>
 	main {
 		text-align: center;
-		max-width: 330px;
 		margin: 0 auto;
 	}
 

@@ -6,7 +6,7 @@
 
   let allTasks = []  
 
-  const readTasksDB = async () => {
+  async function readTasksDB() {
     const reqObj = {
       url: baseURL + '/',
       init: {
@@ -20,7 +20,7 @@
       return tasks
     } else {
       tasks = []
-      allTasks = []
+      allTasks = tasks
       return null
     }
   }
@@ -28,6 +28,9 @@
   onMount(async () => {        
     const tasks = await readTasksDB()
     if(tasks) $TaskStore = tasks
+    else{
+      //showError()
+    }
     // console.log('created', tasks)
   })
 
@@ -64,8 +67,15 @@
 
       if(createdTask){
         const tasks = await readTasksDB()
+
         if(tasks) $TaskStore = tasks
-        else {$TaskStore = []}
+        else {
+          $TaskStore = []
+          // showError()
+        }
+        
+      } else {
+        //showError()
       }
 
       taskName = ''
@@ -77,6 +87,7 @@
   }
 
   function focus(e){
+    //use focus ->  focus action is functions called when element is created
     e.focus()
   }
 

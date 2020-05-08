@@ -13,7 +13,7 @@
   let isEditing = false
   let updatedTaskName = task.taskName
 
-  const readTasksDB = async () => {
+  async function readTasksDB(){
     const reqObj = {
       url: baseURL + '/',
       init: {
@@ -28,6 +28,7 @@
     } else {
       tasks = []
       dispatch('updateAllTasks', tasks)
+      // showError()
       return null
     }
   }
@@ -44,11 +45,14 @@
 
     if(result){
       const tasks = await readTasksDB()
-      if(tasks) $TaskStore = tasks
-      else {$TaskStore = []}
-    }
 
-    else{
+      if(tasks) $TaskStore = tasks
+      else {
+        $TaskStore = []
+        //showError
+      }
+
+    } else {
         //Show Error Page
     }
 
@@ -74,7 +78,15 @@
       const result = await fetchAPI(reqObj)
       if(result){
         const tasks = await readTasksDB()
+
         if(tasks) $TaskStore = tasks
+        else {
+          $TaskStore = []
+          //showError
+        }
+
+      }else{
+        //showError
       }
 
       isEditing = false
@@ -87,7 +99,7 @@
 
 
   function focus(e){
-    //use init actions are functions
+    //use focus ->  focus action is functions called when element is created
     e.focus()
   }
 
@@ -114,7 +126,10 @@
 
   #taskName{
     float: left;
-    /* margin-left: 5px; */
+  }
+
+  #taskName:hover{
+    cursor: pointer;
   }
 
   #deleteIcon{
