@@ -76,22 +76,32 @@
     allTasks = e.detail
   }
 
+  function focus(e){
+    e.focus()
+  }
+
 </script>
 
+  <div id='container'>
 
-<div id="lists-container">
-  <h1 id='todo-heading'>TODOS</h1>
+    <h1 id='todoHeading'>TODOS</h1>
 
-  <input id="add-list-input" placeholder=" Search | Add Lists" type="text" on:keyup={() => addTask(event)} bind:value={taskName}>
-
-  <div id="show-lists-container">
+    <input id="addTaskInput" use:focus placeholder=" Search | Add Lists"  type="text" on:keyup={() => addTask(event)} bind:value={taskName}>
+    
     {#each $TaskStore as task (task.taskId)}
       <TaskDetails {task} on:updateAllTasks={updateAllTasks}/>
     {/each}
-  </div>
 
-</div>
+  </div>
 
 <style>
 
+  #container{
+    width: 360px;
+    margin: 100px auto;
+  }
+  
+  #addTaskInput{
+      width: 100%;
+  }
 </style>

@@ -22,11 +22,12 @@
     }
 
     let tasks = await fetchAPI(reqObj)
-    dispatch('updateAllTasks', tasks)
     if (tasks != null && tasks.taskCount !== 0) {
+      dispatch('updateAllTasks', tasks)
       return tasks
     } else {
       tasks = []
+      dispatch('updateAllTasks', tasks)
       return null
     }
   }
@@ -83,23 +84,49 @@
   function showEditInputField() {
       isEditing = true
   }
+
+
+  function focus(e){
+    //use init actions are functions
+    e.focus()
+  }
+
 </script>
 
 <div id={task.taskId}>
-    <div id='taskName'>
-        {#if isEditing}
-          <input type="text" bind:value={updatedTaskName} autofocus on:keyup={() => updateTask(task.taskId)}>
-        {:else}
-            <span>{task.taskName} </span>
-            <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>
-            <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
-        {/if}
-    </div>
-    
+  {#if isEditing}
+    <input type="text" use:focus bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId)}>
+  {:else}
+    <span id='taskName'>{task.taskName} </span>
+    <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>
+    <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
+  {/if}  
 </div>
 
 <style>
-  /* #taskName{
-      float: left;
-  } */
+  div{
+    padding: 5px;
+  }
+
+  input{
+    width: 100%;
+  }
+
+  #taskName{
+    float: left;
+    /* margin-left: 5px; */
+  }
+
+  #deleteIcon{
+    float: right;
+    margin-left: 5px;
+  }
+
+  #editIcon{
+    /* float: right; */
+    margin-left: 150px;
+    /* position: absolute; */
+  }
+
+ 
 </style>

@@ -1,5 +1,3 @@
-import TaskStore from '../stores/taskStore.js'
-
 const fetchAPI = async (reqObj) => {
   try {
     const res = await window.fetch(reqObj.url, reqObj.init)
