@@ -73,7 +73,7 @@
           $TaskStore = []
           // showError()
         }
-        
+
       } else {
         //showError()
       }
@@ -100,7 +100,7 @@
     <input id="addTaskInput" use:focus placeholder=" Search | Add Lists"  type="text" on:keyup={() => addTask(event)} bind:value={taskName}>
     
     {#each $TaskStore as task (task.taskId)}
-      <TaskDetails {task} on:updateAllTasks={updateAllTasks}/>
+      <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks/>
     {/each}
 
   </div>

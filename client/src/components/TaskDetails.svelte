@@ -99,8 +99,12 @@
 
 
   function focus(e){
-    //use focus ->  focus action is functions called when element is created
+    //use focus ->  focus action is function, called when element is created
     e.focus()
+  }
+
+  function showSubTasks(task){
+    dispatch('showSubTasks', task)
   }
 
 </script>
@@ -109,7 +113,7 @@
   {#if isEditing}
     <input type="text" use:focus bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId)}>
   {:else}
-    <span id='taskName'>{task.taskName} </span>
+    <span id='taskName' on:click={() => showSubTasks(task)}>{task.taskName} </span>
     <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>
     <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
   {/if}  

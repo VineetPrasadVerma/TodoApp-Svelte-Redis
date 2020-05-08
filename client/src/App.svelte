@@ -1,9 +1,23 @@
 <script>
 	import Task from './components/Task.svelte'
+	import SubTasks from './components/SubTasks.svelte'
+
+	export let displaySubTasks = false
+	let task
+
+	function showSubTasks(e){
+		displaySubTasks = true
+		task = e.detail
+	}
+
 </script>
 
 <main>
-	<Task />
+	{#if !displaySubTasks}
+		<Task on:showSubTasks={showSubTasks}/>
+	{:else}
+		<SubTasks {task}/>
+	{/if}
 </main>
 
 <style>
