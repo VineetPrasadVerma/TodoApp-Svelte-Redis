@@ -16,6 +16,7 @@
 
     let subTasks = await fetchAPI(reqObj)
     if (subTasks != null && subTasks.subTaskCount !== 0) {
+      if(subTasks.message) subTasks = []
       return subTasks
     } else {
       subTasks = []
@@ -31,20 +32,36 @@
     }
   })
 
+  function focus(e){
+    //use focus ->  focus action is functions called when element is created
+    e.focus()
+  }
+
 
 </script>
+
+<!-- on:keyup={() => addTask(event)} bind:value={taskName} -->
 
 <div id='container'>
 
     <h1 id='taskName'>{task.taskName}</h1>
 
-    <!-- <input id="addTaskInput" use:focus placeholder=" Search | Add Lists"  type="text" on:keyup={() => addTask(event)} bind:value={taskName}>
+    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text">
     
-    {#each $TaskStore as task (task.taskId)}
-      <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks/>
-    {/each} -->
+    {#each $SubTaskStore as subTask (subTask.taskId)}
+      <SubTaskDetails {subTask}/>
+    {/each}
 
 </div>
 
 
-<style></style>
+<style>
+  #container{
+    width: 360px;
+    margin: 100px auto;
+  }
+  
+  #addSubTaskInput{
+      width: 100%;
+  }
+</style>
