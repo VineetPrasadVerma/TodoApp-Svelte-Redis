@@ -40,6 +40,8 @@
   let subTaskName = ''
 
   async function addSubTask() {
+    event.target.placeholder = 'Add Subtask'
+    
     if(event.keyCode === 13){
 
       if(subTaskName === ''){
@@ -57,7 +59,7 @@
       }
 
       let createdSubTask = await fetchAPI(reqObj)
-      
+
       if(createdSubTask){
         const subTasks = await readSubTasksDB()
 

@@ -31,6 +31,8 @@
   }
 
   async function updateSubTask(id) {
+    event.target.placeholder = 'Add Subtask'
+    
     if(event.keyCode === 13){
 
       if(updatedSubTaskName === ''){
@@ -76,11 +78,11 @@
     const response = await fetchAPI(reqObj)
 
     if(response){
-      const tasks = await readTasksDB()
+      const subTasks = await readSubTasksDB()
 
-      if(tasks) $TaskStore = tasks
+      if(subTasks) $SubTaskStore = subTasks
       else {
-        $TaskStore = []
+        $SubTaskStore = []
         //showError
       }
 

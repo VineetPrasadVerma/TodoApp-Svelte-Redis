@@ -97,7 +97,7 @@
 
     <h1 id='todoHeading'>TODOS</h1>
 
-    <input id="addTaskInput" use:focus placeholder=" Search | Add Lists"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
+    <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
     
     {#each $TaskStore as task (task.taskId)}
       <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks/>
