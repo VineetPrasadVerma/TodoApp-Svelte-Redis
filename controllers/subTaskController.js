@@ -15,7 +15,7 @@ subTaskQueries.getAllSubtask = async (req, res) => {
     const subTasks = JSON.parse(await redisCommands.hget(taskId, 'subTasks'))
 
     if (subTasks.length === 0) {
-      return res.status(200).json({ subTaskCount: 0, message: 'No subTasks present' })
+      return res.status(200).json({ message: 'No subTasks present' })
     }
 
     res.status(200).json(subTasks)
