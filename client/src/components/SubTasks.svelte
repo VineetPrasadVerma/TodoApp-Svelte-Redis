@@ -37,18 +37,55 @@
     e.focus()
   }
 
+  let subTaskName = ''
+
+  async function addSubTask(event) {
+    if(event.keyCode === 13){
+
+      if(subTaskName === ''){
+        event.target.placeholder = 'Can\'t add empty SubTask'
+        return
+      }
+
+      const reqObj = {
+        url: baseURL + '/' + task.taskId + '/subtasks/',
+        init: {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ subTaskName: subTaskName })
+        }
+      }
+
+      let createdSubTask = await fetchAPI(reqObj)
+      console.log(createdSubTask)
+      if(createdSubTask){
+        const subTasks = await readSubTasksDB()
+
+        if(subTasks) $SubTaskStore = subTasks
+        else {
+          $SubTaskStore = []
+          // showError()
+        }
+
+      } else {
+        //showError()
+      }
+
+      subTaskName = ''
+    }
+  }
+
 
 </script>
 
-<!-- on:keyup={() => addTask(event)} bind:value={taskName} -->
 
 <div id='container'>
 
     <h1 id='taskName'>{task.taskName}</h1>
 
-    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text">
+    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask(event)} bind:value={subTaskName}>
     
-    {#each $SubTaskStore as subTask (subTask.taskId)}
+    {#each $SubTaskStore as subTask (subTask.id)}
       <SubTaskDetails {subTask}/>
     {/each}
 

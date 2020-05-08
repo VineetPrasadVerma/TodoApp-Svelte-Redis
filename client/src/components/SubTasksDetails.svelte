@@ -36,12 +36,37 @@
 
 <!-- bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId) -->
 
-<div id={subTask.taskId}>
+<div id={subTask.id}>
     {#if isEditing}
       <input type="text" use:focus>
     {:else}
-      <span id='subTaskName' >{subTask.taskName} </span>
+      <span id='subTaskName'>{subTask.name} </span>
       <span id='deleteIcon' on:click={() => deleteTask(subTask.taskId)}><Icon icon={faTrash}/></span>
       <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
     {/if}  
 </div>
+
+<style>
+  div{
+    padding: 5px;
+  }
+
+  input{
+    width: 100%;
+  }
+
+  #subTaskName{
+    float: left;
+  }
+
+  #deleteIcon{
+    float: right;
+    margin-left: 5px;
+  }
+
+  #editIcon{
+    /* float: right; */
+    margin-left: 150px;
+    /* position: absolute; */
+  }
+</style>

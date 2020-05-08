@@ -58,7 +58,7 @@ subTaskQueries.createSubtask = async (req, res) => {
 
     await redisCommands.hset(taskId, 'subTasks', JSON.stringify(subTasks))
 
-    res.status(201).send(subTasks)
+    res.status(201).send(subTask)
   } catch (e) {
     res.status(500).json({ message: 'Can\'t add subTask' })
   }
