@@ -1,13 +1,16 @@
 <script>
   import SubTaskStore from '../stores/subTaskStore.js'
   import Icon from 'fa-svelte'
-  import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons/'
+  import { faTrash, faPencilAlt, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import { createEventDispatcher } from 'svelte';
 
 
   export let subTask
+  export let task
+  
   let isEditing = false
+  let updatedSubTaskName = subTask.name 
 
   async function readSubTasksDB() {
     const reqObj = {
@@ -19,11 +22,76 @@
 
     let subTasks = await fetchAPI(reqObj)
     if (subTasks != null && subTasks.subTaskCount !== 0) {
+      if(subTasks.message) subTasks = []
       return subTasks
     } else {
       subTasks = []
       return null
     }
+  }
+
+  async function updateSubTask(id) {
+    if(event.keyCode === 13){
+
+      if(updatedSubTaskName === ''){
+        event.target.placeholder = 'Can\'t add empty Task'
+        return
+      }
+
+      const reqObj = {
+        url: baseURL + '/' + task.taskId + '/subtasks/' + id,
+        init: {
+          method: 'PUT',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify({ name: updatedSubTaskName })
+        }
+      }
+
+      const response = await fetchAPI(reqObj)
+      if(response){
+        const subTasks = await readSubTasksDB()
+
+        if(subTasks) $SubTaskStore = subTasks
+        else {
+          $SubTaskStore = []
+          //showError
+        }
+
+      }else{
+        //showError
+      }
+
+      isEditing = false
+    }
+  }
+
+  async function deleteSubTask(id) {
+    const reqObj = {
+      url: baseURL + '/' + task.taskId + '/subtasks/' + id,
+      init: {
+        method: 'DELETE'
+      }
+    }
+
+    const response = await fetchAPI(reqObj)
+
+    if(response){
+      const tasks = await readTasksDB()
+
+      if(tasks) $TaskStore = tasks
+      else {
+        $TaskStore = []
+        //showError
+      }
+
+    } else {
+        //Show Error Page
+    }
+
+  }
+
+  function showEditInputField() {
+      isEditing = true
   }
 
   function focus(e){
@@ -34,15 +102,15 @@
 
 </script>
 
-<!-- bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId) -->
 
 <div id={subTask.id}>
     {#if isEditing}
-      <input type="text" use:focus>
+      <input type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTask(subTask.id)}>
     {:else}
       <span id='subTaskName'>{subTask.name} </span>
-      <span id='deleteIcon' on:click={() => deleteTask(subTask.taskId)}><Icon icon={faTrash}/></span>
-      <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
+      <span id='arrowCircleDownIcon' on:click={() => expandSubTask()}><Icon icon={faArrowCircleDown}/></span>
+      <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)}><Icon icon={faTrash}/></span>
+      <span id='editIcon' on:click={() => showEditInputField(subTask.id)}><Icon icon={faPencilAlt}/></span>
     {/if}  
 </div>
 
@@ -59,14 +127,18 @@
     float: left;
   }
 
+  #arrowCircleDownIcon{
+    float:right;
+  }
+
   #deleteIcon{
     float: right;
-    margin-left: 5px;
+    margin-right: 8px;
   }
 
   #editIcon{
     /* float: right; */
-    margin-left: 150px;
+    /* margin-left: 150px; */
     /* position: absolute; */
   }
 </style>

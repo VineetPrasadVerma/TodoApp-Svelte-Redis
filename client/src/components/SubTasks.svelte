@@ -39,7 +39,7 @@
 
   let subTaskName = ''
 
-  async function addSubTask(event) {
+  async function addSubTask() {
     if(event.keyCode === 13){
 
       if(subTaskName === ''){
@@ -57,7 +57,7 @@
       }
 
       let createdSubTask = await fetchAPI(reqObj)
-      console.log(createdSubTask)
+      
       if(createdSubTask){
         const subTasks = await readSubTasksDB()
 
@@ -83,10 +83,10 @@
 
     <h1 id='taskName'>{task.taskName}</h1>
 
-    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask(event)} bind:value={subTaskName}>
+    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
     {#each $SubTaskStore as subTask (subTask.id)}
-      <SubTaskDetails {subTask}/>
+      <SubTaskDetails {subTask} {task}/>
     {/each}
 
 </div>
