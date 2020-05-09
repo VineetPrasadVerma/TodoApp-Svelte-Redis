@@ -1,17 +1,13 @@
 <script>
-  
-  let priorityValue
+  import CustomSelect from '../shared/Select.svelte'
+  let priorityValue = 0
+  let priorityArray = ['None', 'Low', 'Medium', 'High']
 </script>
 
 <div id="subTaskExpand">
     <span id="notesLabel">Notes:</span>
     <textarea id="notes"></textarea>
-    <select id="priority" bind:value={priorityValue}>
-      <option value=0>None</option>
-      <option value=1>Low</option>
-      <option value=2>Medium</option>
-      <option value=3>High</option>
-    </select>
+    <CustomSelect {priorityArray} {priorityValue} />
     <input id="scheduling" type="date">
 </div>
 
