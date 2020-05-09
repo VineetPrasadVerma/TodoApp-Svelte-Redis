@@ -1,15 +1,16 @@
 <script>
   import SubTaskStore from '../stores/subTaskStore.js'
   import Icon from 'fa-svelte'
+  import SubTaskExpand from './SubTaskExpand.svelte'
   import { faTrash, faPencilAlt, faArrowCircleDown, faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
-  import { createEventDispatcher } from 'svelte';
-
+  import { createEventDispatcher } from 'svelte'
 
   export let subTask
   export let task
   
   let isEditing = false
+  let isExpand = false
   let updatedSubTaskName = subTask.name 
 
   async function readSubTasksDB() {
@@ -96,6 +97,10 @@
       isEditing = true
   }
 
+  function expandSubTask(id){
+    isExpand = !isExpand
+  }
+
   function focus(e){
     //use focus ->  focus action is functions called when element is created
     e.focus()
@@ -107,23 +112,38 @@
 
 <div id={subTask.id}>
     {#if isEditing}
-      <input type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTask(subTask.id)}>
+      <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTask(subTask.id)}>
     {:else}
+      <input id="completedCheckbox" type="checkbox">
       <span id='subTaskName'>{subTask.name} </span>
-      <span id='arrowCircleDownIcon' on:click={() => expandSubTask()}><Icon icon={faArrowCircleDown}/></span>
+      <span id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)}><Icon icon={faArrowCircleDown}/></span>
       <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)}><Icon icon={faTrash}/></span>
       <span id='editIcon' on:click={() => showEditInputField(subTask.id)}><Icon icon={faPencilAlt}/></span>
       <div></div>
-    {/if}  
+
+      {#if isExpand}
+        <SubTaskExpand />
+      {/if}
+
+    {/if} 
+    
+    
 </div>
+
 
 <style>
   div{
     padding: 8px;
   }
 
-  input{
+  #editInputField{
     width: 100%;
+  }
+
+  #completedCheckbox{
+    float: left;
+    margin-right: 5px;
+    margin-top: 2px;
   }
 
   #subTaskName{
