@@ -10,13 +10,17 @@
 		task = e.detail
 	}
 
+	function showTasks(e){
+		displaySubTasks = false
+	}
+
 </script>
 
 <main>
 	{#if !displaySubTasks}
 		<Task on:showSubTasks={showSubTasks}/>
 	{:else}
-		<SubTasks {task}/>
+		<SubTasks {task} on:showTasks={showTasks}/>
 	{/if}
 </main>
 

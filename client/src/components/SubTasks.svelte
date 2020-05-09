@@ -3,8 +3,12 @@
   import SubTaskStore from '../stores/subTaskStore.js'
   import SubTaskDetails from './SubTasksDetails.svelte' 
   import {baseURL, fetchAPI} from '../shared/fetch.js'
+  import { createEventDispatcher } from 'svelte';
+  import Icon from 'fa-svelte'
+  import { faArrowCircleLeft, faTimes } from '@fortawesome/free-solid-svg-icons/'
 
   export let task
+  const dispatch = createEventDispatcher()
 
   async function readSubTasksDB() {
     const reqObj = {
@@ -77,13 +81,17 @@
     }
   }
 
+  function showTasks(){
+    dispatch('showTasks')
+  }
+
 
 </script>
 
 
 <div id='container'>
 
-    <h1 id='taskName'>{task.taskName}</h1>
+    <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span id='timesIcon'><Icon icon={faTimes}/></span></h2>
 
     <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
@@ -102,5 +110,17 @@
   
   #addSubTaskInput{
       width: 100%;
+  }
+
+  #backIcon{
+    float: left;
+    padding: 4px 0;
+    font-size: 20px;
+  }
+
+  #timesIcon{
+    float: right;
+    padding: 4px 0;
+    font-size: 20px;
   }
 </style>

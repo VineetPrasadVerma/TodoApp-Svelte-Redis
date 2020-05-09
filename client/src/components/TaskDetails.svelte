@@ -115,13 +115,14 @@
   {:else}
     <span id='taskName' on:click={() => showSubTasks(task)}>{task.taskName} </span>
     <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>
-    <span id='editIcon' on:click={() => showEditInputField()}><Icon icon={faPencilAlt}/></span>
+    <span id='editIcon' on:click={() => showEditInputField(task.id)}><Icon icon={faPencilAlt}/></span>
+    <div></div>
   {/if}  
 </div>
 
 <style>
   div{
-    padding: 5px;
+    padding: 8px;
   }
 
   input{
@@ -138,13 +139,12 @@
 
   #deleteIcon{
     float: right;
-    margin-left: 5px;
+    /* margin-left: 5px; */
   }
 
   #editIcon{
-    /* float: right; */
-    margin-left: 150px;
-    /* position: absolute; */
+    float: right;
+    margin-right: 8px;
   }
 
 </style>

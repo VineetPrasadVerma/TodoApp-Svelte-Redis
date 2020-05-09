@@ -1,7 +1,7 @@
 <script>
   import SubTaskStore from '../stores/subTaskStore.js'
   import Icon from 'fa-svelte'
-  import { faTrash, faPencilAlt, faArrowCircleDown } from '@fortawesome/free-solid-svg-icons/'
+  import { faTrash, faPencilAlt, faArrowCircleDown, faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import { createEventDispatcher } from 'svelte';
 
@@ -113,12 +113,13 @@
       <span id='arrowCircleDownIcon' on:click={() => expandSubTask()}><Icon icon={faArrowCircleDown}/></span>
       <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)}><Icon icon={faTrash}/></span>
       <span id='editIcon' on:click={() => showEditInputField(subTask.id)}><Icon icon={faPencilAlt}/></span>
+      <div></div>
     {/if}  
 </div>
 
 <style>
   div{
-    padding: 5px;
+    padding: 8px;
   }
 
   input{
@@ -139,7 +140,8 @@
   }
 
   #editIcon{
-    /* float: right; */
+    float: right;
+    margin-right: 8px;
     /* margin-left: 150px; */
     /* position: absolute; */
   }
