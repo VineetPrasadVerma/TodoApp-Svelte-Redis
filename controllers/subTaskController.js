@@ -72,7 +72,6 @@ subTaskQueries.updateSubtask = async (req, res) => {
     const requestBody = req.body
     const subTaskField = Object.keys(requestBody)[0]
     const subTaskValue = requestBody[subTaskField]
-
     const task = await redisCommands.exists(taskId)
 
     if (!task) {

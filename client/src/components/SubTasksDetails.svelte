@@ -11,6 +11,7 @@
   
   let isEditing = false
   let isExpand = false
+  let isCompleted = subTask.completed
   let updatedSubTaskName = subTask.name 
 
   async function readSubTasksDB() {
@@ -31,7 +32,7 @@
     }
   }
 
-  async function updateSubTask(id) {
+  async function updateSubTaskName(id) {
     event.target.placeholder = 'Add Subtask'
     
     if(event.keyCode === 13){
@@ -93,12 +94,48 @@
 
   }
 
+  async function updateSubTask(id, key, value) {
+    const reqObj = {
+      url: baseURL + '/' + task.taskId + '/subtasks/' + id,
+      init: {
+        method: 'PUT',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify({ [key]: value })
+      }
+    }
+
+    const response = await fetchAPI(reqObj)
+    if(response){
+      isCompleted != isCompleted
+      // Update Order
+      let subTasks = await readSubTasksDB()
+      if(subTasks) $SubTaskStore = subTasks
+      else {
+        $SubTaskStore = []
+        //showError
+      }
+
+    }else{
+      //showError
+    }
+  }
+
+
   function showEditInputField() {
       isEditing = true
   }
 
   function expandSubTask(id){
     isExpand = !isExpand
+  }
+
+  async function updateFromExpandSubTask(event){
+    let key = Object.keys(event.detail)[0]
+    let value = event.detail[key]
+
+    // console.log(value)
+
+    await updateSubTask(subTask.id, key, value)
   }
 
   function focus(e){
@@ -112,9 +149,9 @@
 
 <div id={subTask.id}>
     {#if isEditing}
-      <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTask(subTask.id)}>
+      <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTaskName(subTask.id)}>
     {:else}
-      <input id="completedCheckbox" type="checkbox">
+      <input id="completedCheckbox" type="checkbox" bind:checked={isCompleted} on:click={() => updateSubTask(subTask.id, 'completed', !isCompleted)}>
       <span id='subTaskName'>{subTask.name} </span>
       <span id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)}><Icon icon={faArrowCircleDown}/></span>
       <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)}><Icon icon={faTrash}/></span>
@@ -122,7 +159,7 @@
       <div></div>
 
       {#if isExpand}
-        <SubTaskExpand />
+        <SubTaskExpand {subTask} on:updateFromExpandSubTask={updateFromExpandSubTask}/>
       {/if}
 
     {/if} 
