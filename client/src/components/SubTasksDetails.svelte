@@ -109,7 +109,10 @@
       isCompleted != isCompleted
       // Update Order
       let subTasks = await readSubTasksDB()
-      if(subTasks) $SubTaskStore = subTasks
+      if(subTasks) {
+        $SubTaskStore = subTasks
+        updateOrderOfSubTasks()
+      }
       else {
         $SubTaskStore = []
         //showError
@@ -118,6 +121,28 @@
     }else{
       //showError
     }
+  }
+
+  function updateOrderOfSubTasks(){
+    const subTasks = $SubTaskStore
+    console.log(subTasks)
+    subTasks.sort((a, b) => a.id - b.id)
+
+    subTasks.sort((a, b) => {
+      if (a.scheduled > b.scheduled) return 1
+      if (b.scheduled > a.scheduled) return -1
+      return 0
+    })
+
+    subTasks.sort((a, b) => b.priority - a.priority)
+
+    subTasks.sort((a, b) => {
+      if (String(a.completed) > String(b.completed)) return 1
+      if (String(b.completed) > String(a.completed)) return -1
+      return 0
+    })
+
+    console.log(subTasks)
   }
 
 

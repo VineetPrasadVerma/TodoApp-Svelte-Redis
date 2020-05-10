@@ -24,7 +24,11 @@
     if(key === 'note'){
       value = notes
     }else if(key === 'scheduled'){
-      value = scheduled
+      if(scheduled === '') {
+        value = 'null'  
+      }else{
+        value = scheduled
+      }
     }else if(key === 'priority'){
       value = priority
     }

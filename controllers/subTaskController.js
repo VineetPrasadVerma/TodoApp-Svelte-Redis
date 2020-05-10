@@ -48,7 +48,7 @@ subTaskQueries.createSubtask = async (req, res) => {
     const subTask = {
       id: id,
       name: subTaskName,
-      scheduled: null,
+      scheduled: 'null',
       completed: false,
       priority: 0,
       note: ''
