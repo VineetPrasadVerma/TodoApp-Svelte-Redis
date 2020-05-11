@@ -95,6 +95,7 @@
   }
 
   async function updateSubTask(id, key, value) {
+
     const reqObj = {
       url: baseURL + '/' + task.taskId + '/subtasks/' + id,
       init: {
@@ -106,9 +107,12 @@
 
     const response = await fetchAPI(reqObj)
     if(response){
-      isCompleted != isCompleted
+      if(key === 'completed') isCompleted != isCompleted
+
       // Update Order
+
       let subTasks = await readSubTasksDB()
+
       if(subTasks) {
         $SubTaskStore = subTasks
         updateOrderOfSubTasks()
@@ -124,8 +128,9 @@
   }
 
   function updateOrderOfSubTasks(){
+    isExpand = false
     const subTasks = $SubTaskStore
-    console.log(subTasks)
+
     subTasks.sort((a, b) => a.id - b.id)
 
     subTasks.sort((a, b) => {
@@ -142,7 +147,7 @@
       return 0
     })
 
-    console.log(subTasks)
+    $SubTaskStore = subTasks
   }
 
 
@@ -205,7 +210,7 @@
   #completedCheckbox{
     float: left;
     margin-right: 5px;
-    margin-top: 2px;
+    margin-top: 3px;
   }
 
   #subTaskName{

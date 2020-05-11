@@ -18,9 +18,8 @@
     updateSubTask('priority')
   }
 
-  function updateSubTask(id){
-    key = id
-    value = ''
+  function updateSubTask(key){
+    
     if(key === 'note'){
       value = notes
     }else if(key === 'scheduled'){
@@ -32,6 +31,7 @@
     }else if(key === 'priority'){
       value = priority
     }
+
     dispatch('updateFromExpandSubTask', {
       [key]:value
     })

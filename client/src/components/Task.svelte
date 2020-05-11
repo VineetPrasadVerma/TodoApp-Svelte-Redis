@@ -37,7 +37,7 @@
   // onDestroy(() => console.log('destroyed',tasks))
 
   function searchTasks(event) {
-    event.target.placeholder = ' Search | Add Lists'
+    event.target.placeholder = ' Search | Add Tasks'
     const searchedTasks = allTasks.filter(task => task.taskName.toLowerCase().includes(event.target.value.toLowerCase()))
     $TaskStore = searchedTasks
   }

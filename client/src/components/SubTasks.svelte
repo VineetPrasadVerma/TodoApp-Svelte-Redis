@@ -19,8 +19,28 @@
     }
 
     let subTasks = await fetchAPI(reqObj)
+
     if (subTasks != null && subTasks.subTaskCount !== 0) {
-      if(subTasks.message) subTasks = []
+
+      if(subTasks.message) {
+        subTasks = []
+        return subTasks
+      }
+
+      subTasks.sort((a, b) => {
+      if (a.scheduled > b.scheduled) return 1
+      if (b.scheduled > a.scheduled) return -1
+      return 0
+      })
+
+      subTasks.sort((a, b) => b.priority - a.priority)
+
+      subTasks.sort((a, b) => {
+        if (String(a.completed) > String(b.completed)) return 1
+        if (String(b.completed) > String(a.completed)) return -1
+        return 0
+      })
+      
       return subTasks
     } else {
       subTasks = []
@@ -30,7 +50,9 @@
 
   onMount(async () => {        
     const subTasks = await readSubTasksDB()
-    if(subTasks) $SubTaskStore = subTasks
+    if(subTasks) {
+      $SubTaskStore = subTasks
+    }
     else{
       //showError()
     }
