@@ -13,7 +13,16 @@
   let isExpand = false
   let isCompleted = subTask.completed
   let updatedSubTaskName = subTask.name 
+  let color = ''
 
+  if(subTask.priority === 3){
+    color = 'red'
+  } else if(subTask.priority === 2 ){
+    color = 'orange'
+  } else if(subTask.priority === 1){
+    color = 'green'
+  }
+    
   async function readSubTasksDB() {
     const reqObj = {
       url: baseURL + '/' + task.taskId + '/subtasks/',
@@ -23,8 +32,30 @@
     }
 
     let subTasks = await fetchAPI(reqObj)
+
     if (subTasks != null && subTasks.subTaskCount !== 0) {
-      if(subTasks.message) subTasks = []
+
+      if(subTasks.message) {
+        subTasks = []
+        return subTasks
+      }
+
+      isExpand = false
+
+      subTasks.sort((a, b) => {
+      if (a.scheduled > b.scheduled) return 1
+      if (b.scheduled > a.scheduled) return -1
+      return 0
+      })
+
+      subTasks.sort((a, b) => b.priority - a.priority)
+
+      subTasks.sort((a, b) => {
+        if (String(a.completed) > String(b.completed)) return 1
+        if (String(b.completed) > String(a.completed)) return -1
+        return 0
+      })
+      
       return subTasks
     } else {
       subTasks = []
@@ -115,7 +146,6 @@
 
       if(subTasks) {
         $SubTaskStore = subTasks
-        updateOrderOfSubTasks()
       }
       else {
         $SubTaskStore = []
@@ -126,30 +156,6 @@
       //showError
     }
   }
-
-  function updateOrderOfSubTasks(){
-    isExpand = false
-    const subTasks = $SubTaskStore
-
-    subTasks.sort((a, b) => a.id - b.id)
-
-    subTasks.sort((a, b) => {
-      if (a.scheduled > b.scheduled) return 1
-      if (b.scheduled > a.scheduled) return -1
-      return 0
-    })
-
-    subTasks.sort((a, b) => b.priority - a.priority)
-
-    subTasks.sort((a, b) => {
-      if (String(a.completed) > String(b.completed)) return 1
-      if (String(b.completed) > String(a.completed)) return -1
-      return 0
-    })
-
-    $SubTaskStore = subTasks
-  }
-
 
   function showEditInputField() {
       isEditing = true
@@ -165,6 +171,17 @@
 
     // console.log(value)
 
+    if(key === 'priority'){
+      subTask.priority = value
+      if(subTask.priority === 3){
+        color = 'red'
+      } else if(subTask.priority === 2 ){
+        color = 'orange'
+      } else if(subTask.priority === 1){
+        color = 'green'
+      }
+    }
+
     await updateSubTask(subTask.id, key, value)
   }
 
@@ -173,7 +190,6 @@
     e.focus()
   }
 
-
 </script>
 
 
@@ -181,9 +197,10 @@
     {#if isEditing}
       <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTaskName(subTask.id)}>
     {:else}
+      
       <input id="completedCheckbox" type="checkbox" bind:checked={isCompleted} on:click={() => updateSubTask(subTask.id, 'completed', !isCompleted)}>
       <span id='subTaskName' class:completed={isCompleted}>{subTask.name} </span>
-      <span id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faArrowCircleDown}/></span>
+      <span id='arrowCircleDownIcon' style='color:{color};' on:click={() => expandSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faArrowCircleDown}/></span>
       <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faTrash}/></span>
       <span id='editIcon' on:click={() => showEditInputField(subTask.id)} class:completed={isCompleted}><Icon icon={faPencilAlt}/></span>
       <div></div>
@@ -238,4 +255,5 @@
     pointer-events: none;
     color: gray;
   }
+
 </style>
