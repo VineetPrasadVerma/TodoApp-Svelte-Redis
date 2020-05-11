@@ -182,10 +182,10 @@
       <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTaskName(subTask.id)}>
     {:else}
       <input id="completedCheckbox" type="checkbox" bind:checked={isCompleted} on:click={() => updateSubTask(subTask.id, 'completed', !isCompleted)}>
-      <span id='subTaskName'>{subTask.name} </span>
-      <span id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)}><Icon icon={faArrowCircleDown}/></span>
-      <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)}><Icon icon={faTrash}/></span>
-      <span id='editIcon' on:click={() => showEditInputField(subTask.id)}><Icon icon={faPencilAlt}/></span>
+      <span id='subTaskName' class:completed={isCompleted}>{subTask.name} </span>
+      <span id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faArrowCircleDown}/></span>
+      <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faTrash}/></span>
+      <span id='editIcon' on:click={() => showEditInputField(subTask.id)} class:completed={isCompleted}><Icon icon={faPencilAlt}/></span>
       <div></div>
 
       {#if isExpand}
@@ -231,5 +231,11 @@
     margin-right: 8px;
     /* margin-left: 150px; */
     /* position: absolute; */
+  }
+
+  .completed{
+    text-decoration: line-through;
+    pointer-events: none;
+    color: gray;
   }
 </style>

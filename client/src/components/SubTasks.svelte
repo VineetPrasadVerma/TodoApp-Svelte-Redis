@@ -113,7 +113,7 @@
 
 <div id='container'>
 
-    <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span id='timesIcon'><Icon icon={faTimes}/></span></h2>
+    <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span id='timesIcon' title="Clear Completed Task"><Icon icon={faTimes}/></span></h2>
 
     <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
@@ -144,5 +144,8 @@
     float: right;
     padding: 4px 0;
     font-size: 20px;
+    color: gray;
+    pointer-Events:none;
   }
+
 </style>
