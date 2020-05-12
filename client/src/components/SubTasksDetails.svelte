@@ -21,7 +21,6 @@
   let key = ''
 
   if(isCompleted){
-    console.log('here')
     dispatch('enableClearSubTaskButton')
   }
 
@@ -71,6 +70,7 @@
       return subTasks
     } else {
       subTasks = []
+      dispatch('handleError', 'Can\'t get subtasks')
       return null
     }
   }
@@ -101,11 +101,11 @@
         if(subTasks) $SubTaskStore = subTasks
         else {
           $SubTaskStore = []
-          //showError
+          dispatch('handleError', 'Can\'t get subtasks')
         }
 
       }else{
-        //showError
+        dispatch('handleError', 'Can\'t update subtasks')
       }
 
       isEditing = false
@@ -128,11 +128,11 @@
       if(subTasks) $SubTaskStore = subTasks
       else {
         $SubTaskStore = []
-        //showError
+        dispatch('handleError', 'Can\'t get subtasks')      
       }
 
     } else {
-        //Show Error Page
+        dispatch('handleError', 'Can\'t delete subtasks')
     }
 
   }
@@ -160,25 +160,25 @@
 
       let subTasks = await readSubTasksDB()
 
-      if(key === 'completed'){
-        let completedTasks = subTasks.filter(subTask => subTask.completed)
-        if(completedTasks.length > 0){
-          dispatch('enableClearSubTaskButton', false)
-        } else{
-          dispatch('enableClearSubTaskButton', true)
-        }
-      }
-
       if(subTasks) {
+        if(key === 'completed'){
+          let completedTasks = subTasks.filter(subTask => subTask.completed)
+          if(completedTasks.length > 0){
+            dispatch('enableClearSubTaskButton', false)
+          } else{
+            dispatch('enableClearSubTaskButton', true)
+          }
+        }
+        
         $SubTaskStore = subTasks
       }
       else {
         $SubTaskStore = []
-        //showError
+        dispatch('handleError', 'Can\'t read subtasks')
       }
 
     }else{
-      //showError
+      dispatch('handleError', 'Can\'t update subtasks')
     }
   }
 
@@ -195,7 +195,7 @@
     let value = event.detail[key]
 
     if(key === 'priority'){
-      
+
       subTask.priority = value
       if(subTask.priority === 3){
         color = 'red'

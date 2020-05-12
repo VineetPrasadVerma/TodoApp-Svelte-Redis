@@ -3,8 +3,12 @@
   import TaskStore from '../stores/taskStore.js'
   import TaskDetails from './TaskDetails.svelte' 
   import {baseURL, fetchAPI} from '../shared/fetch.js'
+  import Error from '../shared/Error.svelte'
 
   let allTasks = []  
+
+  let showErrorPage = false
+  let message = ''
 
   async function readTasksDB() {
     const reqObj = {
@@ -29,7 +33,8 @@
     const tasks = await readTasksDB()
     if(tasks) $TaskStore = tasks
     else{
-      //showError()
+      message = 'Can\'t get tasks'
+      showErrorPage = true
     }
     // console.log('created', tasks)
   })
@@ -64,18 +69,20 @@
       }
 
       let createdTask = await fetchAPI(reqObj)
-
       if(createdTask){
         const tasks = await readTasksDB()
 
         if(tasks) $TaskStore = tasks
         else {
           $TaskStore = []
-          // showError()
+          
+          message = 'Can\'t get tasks'
+          showErrorPage = true
         }
 
       } else {
-        //showError()
+        message = 'Can\'t add Task'
+        showErrorPage = true
       }
 
       taskName = ''
@@ -91,19 +98,28 @@
     e.focus()
   }
 
+  function handleError(e){
+    message = e.detail
+    showErrorPage = true
+  }
+
 </script>
 
-  <div id='container'>
+  {#if !showErrorPage}
+    <div id='container'>
 
-    <h1 id='todoHeading'>TODOS</h1>
+      <h1 id='todoHeading'>TODOS</h1>
 
-    <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
-    
-    {#each $TaskStore as task (task.taskId)}
-      <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks/>
-    {/each}
-
+      <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
+      
+        {#each $TaskStore as task (task.taskId)}
+          <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks on:handleError={handleError}/>
+        {/each}
   </div>
+  {:else}
+    <Error {message}/>
+  {/if}
+
 
 <style>
 

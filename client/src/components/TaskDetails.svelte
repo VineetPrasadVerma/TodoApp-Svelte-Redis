@@ -5,7 +5,6 @@
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import { createEventDispatcher } from 'svelte';
 
-
   export let task
 
   const dispatch = createEventDispatcher();
@@ -27,8 +26,8 @@
       return tasks
     } else {
       tasks = []
-      dispatch('updateAllTasks', tasks)
-      // showError()
+      // dispatch('updateAllTasks', tasks)
+      dispatch('handleError', 'Can\'t get tasks')
       return null
     }
   }
@@ -49,11 +48,12 @@
       if(tasks) $TaskStore = tasks
       else {
         $TaskStore = []
-        //showError
+
+        dispatch('handleError', 'Can\'t get tasks')
       }
 
     } else {
-        //Show Error Page
+      dispatch('handleError', 'Can\'t delete tasks')
     }
 
   }
@@ -82,11 +82,11 @@
         if(tasks) $TaskStore = tasks
         else {
           $TaskStore = []
-          //showError
+          dispatch('handleError', 'Can\'t get tasks')
         }
 
       }else{
-        //showError
+        dispatch('handleError', 'Can\'t update tasks')
       }
 
       isEditing = false

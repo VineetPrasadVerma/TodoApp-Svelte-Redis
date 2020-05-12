@@ -3,12 +3,18 @@
   import SubTaskStore from '../stores/subTaskStore.js'
   import SubTaskDetails from './SubTasksDetails.svelte' 
   import {baseURL, fetchAPI} from '../shared/fetch.js'
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte'
   import Icon from 'fa-svelte'
   import { faArrowCircleLeft, faTimes } from '@fortawesome/free-solid-svg-icons/'
+  import Error from '../shared/Error.svelte'
+
+  let showErrorPage = false
+  let message = ''
 
   export let task
+
   let isDisable = true
+
   const dispatch = createEventDispatcher()
 
   async function readSubTasksDB() {
@@ -52,16 +58,16 @@
   onMount(async () => {        
     const subTasks = await readSubTasksDB()
 
-    let completedTasks = subTasks.filter(subTask => subTask.completed)
-    if(completedTasks.length > 0){
-      isDisable = false
-    }
-
     if(subTasks) {
       $SubTaskStore = subTasks
+      let completedTasks = subTasks.filter(subTask => subTask.completed)
+      if(completedTasks.length > 0){
+        isDisable = false
+      } 
     }
     else{
-      //showError()
+      message = 'Can\'t get subtasks'
+      showErrorPage = true
     }
   })
 
@@ -99,11 +105,13 @@
         if(subTasks) $SubTaskStore = subTasks
         else {
           $SubTaskStore = []
-          // showError()
+          message = 'Can\'t get subtasks'
+          showErrorPage = true
         }
 
       } else {
-        //showError()
+        message = 'Can\'t add subtask'
+        showErrorPage = true
       }
 
       subTaskName = ''
@@ -120,6 +128,21 @@
 
     const response = await fetchAPI(reqObj)
 
+    if(response){
+      const subTasks = await readSubTasksDB()
+
+      if(subTasks) $SubTaskStore = subTasks
+      else {
+        $SubTaskStore = []
+        message = 'Can\'t get subtasks'
+        showErrorPage = true
+      }
+
+    } else {
+      message = 'Can\'t delete subtask'
+      showErrorPage = true
+    }
+
   }
 
   async function clearCompletedSubTasks(){
@@ -134,11 +157,13 @@
       const subtasks = await readSubTasksDB()
       if(subtasks) $SubTaskStore = subtasks
       else{
-        //showError
+        message = 'Can\'t get subtasks'
+        showErrorPage = true
       }
 
     }else{
-      //show Error
+      message = 'Can\'t get subtask'
+      showErrorPage = true
     }
   }
 
@@ -150,20 +175,29 @@
     isDisable = e.detail
   } 
 
+  function handleError(e){
+    message = e.detail
+    showErrorPage = true
+  }
+  
 </script>
 
 
-<div id='container'>
+{#if !showErrorPage}
+  <div id='container'>
 
     <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span class='timesIcon' class:disable={isDisable} on:click={()=> clearCompletedSubTasks()} title="Clear Completed Task"><Icon icon={faTimes}/></span></h2>
 
     <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
     {#each $SubTaskStore as subTask (subTask.id)}
-      <SubTaskDetails {subTask} {task} on:enableClearSubTaskButton={enableClearSubTaskButton}/>
+      <SubTaskDetails {subTask} {task} on:enableClearSubTaskButton={enableClearSubTaskButton} on:handleError={handleError}/>
     {/each}
 
-</div>
+  </div>
+{:else}
+  <Error {message} />
+{/if}
 
 
 <style>
