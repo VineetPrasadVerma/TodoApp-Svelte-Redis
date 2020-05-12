@@ -51,6 +51,12 @@
 
   onMount(async () => {        
     const subTasks = await readSubTasksDB()
+
+    let completedTasks = subTasks.filter(subTask => subTask.completed)
+    if(completedTasks.length > 0){
+      isDisable = false
+    }
+
     if(subTasks) {
       $SubTaskStore = subTasks
     }
@@ -141,8 +147,7 @@
   }
 
   function enableClearSubTaskButton(e){
-    console.log('Vineet')
-    isEnable = true
+    isDisable = e.detail
   } 
 
 </script>
@@ -155,9 +160,6 @@
     <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
     {#each $SubTaskStore as subTask (subTask.id)}
-      {#if isDisable}
-        {isDisable} = true
-      {/if}
       <SubTaskDetails {subTask} {task} on:enableClearSubTaskButton={enableClearSubTaskButton}/>
     {/each}
 

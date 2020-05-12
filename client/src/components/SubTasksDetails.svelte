@@ -20,10 +20,10 @@
   let color = ''
   let key = ''
 
-  // if(isCompleted){
-  //   console.log('here')
-  //   dispatch('enableClearSubTaskButton')
-  // }
+  if(isCompleted){
+    console.log('here')
+    dispatch('enableClearSubTaskButton')
+  }
 
   if(subTask.priority === 3){
     color = 'red'
@@ -160,6 +160,15 @@
 
       let subTasks = await readSubTasksDB()
 
+      if(key === 'completed'){
+        let completedTasks = subTasks.filter(subTask => subTask.completed)
+        if(completedTasks.length > 0){
+          dispatch('enableClearSubTaskButton', false)
+        } else{
+          dispatch('enableClearSubTaskButton', true)
+        }
+      }
+
       if(subTasks) {
         $SubTaskStore = subTasks
       }
@@ -186,6 +195,7 @@
     let value = event.detail[key]
 
     if(key === 'priority'){
+      
       subTask.priority = value
       if(subTask.priority === 3){
         color = 'red'
