@@ -23,8 +23,11 @@
       allTasks = tasks
       return tasks
     } else {
-      tasks = []
-      allTasks = tasks
+      if(tasks.taskCount === 0){
+        tasks = []
+        allTasks = tasks
+        return tasks
+      }
       return null
     }
   }

@@ -25,7 +25,10 @@
       dispatch('updateAllTasks', tasks)
       return tasks
     } else {
-      tasks = []
+      if(tasks.taskCount === 0){
+        tasks = []
+        return tasks
+      }
       // dispatch('updateAllTasks', tasks)
       dispatch('handleError', 'Can\'t get tasks')
       return null
@@ -41,10 +44,8 @@
     }
 
     const result = await fetchAPI(reqObj)
-
     if(result){
       const tasks = await readTasksDB()
-
       if(tasks) $TaskStore = tasks
       else {
         $TaskStore = []
