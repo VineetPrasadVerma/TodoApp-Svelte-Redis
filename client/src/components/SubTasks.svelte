@@ -8,6 +8,7 @@
   import { faArrowCircleLeft, faTimes } from '@fortawesome/free-solid-svg-icons/'
 
   export let task
+  let isDisable = true
   const dispatch = createEventDispatcher()
 
   async function readSubTasksDB() {
@@ -103,22 +104,61 @@
     }
   }
 
+  async function deleteSubTask(id) {
+    const reqObj = {
+      url: baseURL + '/' + task.taskId + '/subtasks/' + id,
+      init: {
+        method: 'DELETE'
+      }
+    }
+
+    const response = await fetchAPI(reqObj)
+
+  }
+
+  async function clearCompletedSubTasks(){
+    const subTasks = await readSubTasksDB()
+    if(subTasks){
+      const completedSubTasks = subTasks.filter(subTask => subTask.completed)
+
+      for(let subTask of completedSubTasks){
+        await deleteSubTask(subTask.id)
+      }
+
+      const subtasks = await readSubTasksDB()
+      if(subtasks) $SubTaskStore = subtasks
+      else{
+        //showError
+      }
+
+    }else{
+      //show Error
+    }
+  }
+
   function showTasks(){
     dispatch('showTasks')
   }
 
+  function enableClearSubTaskButton(e){
+    console.log('Vineet')
+    isEnable = true
+  } 
 
 </script>
 
 
 <div id='container'>
 
-    <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span id='timesIcon' title="Clear Completed Task"><Icon icon={faTimes}/></span></h2>
+    <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span class='timesIcon' class:disable={isDisable} on:click={()=> clearCompletedSubTasks()} title="Clear Completed Task"><Icon icon={faTimes}/></span></h2>
 
     <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
     
     {#each $SubTaskStore as subTask (subTask.id)}
-      <SubTaskDetails {subTask} {task}/>
+      {#if isDisable}
+        {isDisable} = true
+      {/if}
+      <SubTaskDetails {subTask} {task} on:enableClearSubTaskButton={enableClearSubTaskButton}/>
     {/each}
 
 </div>
@@ -140,10 +180,13 @@
     font-size: 20px;
   }
 
-  #timesIcon{
+  .timesIcon{
     float: right;
     padding: 4px 0;
     font-size: 20px;
+  }
+
+  .disable{
     color: gray;
     pointer-Events:none;
   }

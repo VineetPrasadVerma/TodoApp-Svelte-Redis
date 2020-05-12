@@ -6,14 +6,24 @@
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import { createEventDispatcher } from 'svelte'
 
+  const dispatch = createEventDispatcher()
+
   export let subTask
   export let task
   
   let isEditing = false
   let isExpand = false
+
   let isCompleted = subTask.completed
   let updatedSubTaskName = subTask.name 
+
   let color = ''
+  let key = ''
+
+  // if(isCompleted){
+  //   console.log('here')
+  //   dispatch('enableClearSubTaskButton')
+  // }
 
   if(subTask.priority === 3){
     color = 'red'
@@ -21,6 +31,8 @@
     color = 'orange'
   } else if(subTask.priority === 1){
     color = 'green'
+  } else {
+    color = 'black'
   }
     
   async function readSubTasksDB() {
@@ -40,7 +52,7 @@
         return subTasks
       }
 
-      isExpand = false
+      if(key !== 'note') isExpand = false
 
       subTasks.sort((a, b) => {
       if (a.scheduled > b.scheduled) return 1
@@ -138,7 +150,11 @@
 
     const response = await fetchAPI(reqObj)
     if(response){
-      if(key === 'completed') isCompleted != isCompleted
+
+      // if(key === 'completed') {
+      //   // isCompleted != isCompleted
+      //   dispatch('enableClearSubTaskButton')
+      // }
 
       // Update Order
 
@@ -166,10 +182,8 @@
   }
 
   async function updateFromExpandSubTask(event){
-    let key = Object.keys(event.detail)[0]
+    key = Object.keys(event.detail)[0]
     let value = event.detail[key]
-
-    // console.log(value)
 
     if(key === 'priority'){
       subTask.priority = value
@@ -179,6 +193,8 @@
         color = 'orange'
       } else if(subTask.priority === 1){
         color = 'green'
+      } else {
+        color = 'black'
       }
     }
 
@@ -200,7 +216,7 @@
       
       <input id="completedCheckbox" type="checkbox" bind:checked={isCompleted} on:click={() => updateSubTask(subTask.id, 'completed', !isCompleted)}>
       <span id='subTaskName' class:completed={isCompleted}>{subTask.name} </span>
-      <span id='arrowCircleDownIcon' style='color:{color};' on:click={() => expandSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faArrowCircleDown}/></span>
+      <span style='color: {color}' id='arrowCircleDownIcon' on:click={() => expandSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faArrowCircleDown}/></span>
       <span id='deleteIcon' on:click={() => deleteSubTask(subTask.id)} class:completed={isCompleted}><Icon icon={faTrash}/></span>
       <span id='editIcon' on:click={() => showEditInputField(subTask.id)} class:completed={isCompleted}><Icon icon={faPencilAlt}/></span>
       <div></div>
