@@ -158,7 +158,13 @@
       }
 
       const subtasks = await readSubTasksDB()
-      if(subtasks) $SubTaskStore = subtasks
+      if(subtasks) {
+        let tasksDone = subTasks.filter(subTask => subTask.completed)
+        if(tasksDone.length > 0){
+        isDisable = true
+      } 
+        $SubTaskStore = subtasks
+      }
       else{
         message = 'Can\'t get subtasks'
         showErrorPage = true

@@ -32,7 +32,7 @@
   } else if(subTask.priority === 1){
     color = 'green'
   } else {
-    color = 'black'
+    color = ''
   }
     
   async function readSubTasksDB() {
@@ -207,7 +207,7 @@
       } else if(subTask.priority === 1){
         color = 'green'
       } else {
-        color = 'black'
+        color = ''
       }
     }
 

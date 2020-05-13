@@ -28,6 +28,7 @@
     } else {
       if(tasks){
         tasks = []
+        dispatch('updateAllTasks', tasks)
         return tasks
       }
       // dispatch('updateAllTasks', tasks)
@@ -48,11 +49,10 @@
     if(result){
       const tasks = await readTasksDB()
       if(tasks) {$TaskStore = tasks
-      console.log($TaskStore)
+      // console.log($TaskStore)
       }
       else {
         $TaskStore = []
-
         dispatch('handleError', 'Can\'t get tasks')
       }
 
@@ -75,11 +75,11 @@
         init: {
           method: 'PUT',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ taskName: updatedTaskName })
+          body: JSON.stringify({ taskName: event.target.value })
         }
       }
 
-      // updatedTaskName = event.target.value
+      updatedTaskName = event.target.value
       
       const result = await fetchAPI(reqObj)
       if(result){
@@ -117,8 +117,8 @@
 
 <div id={task.taskId}>
   {#if isEditing}
-    <input type="text" use:focus bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId)}>
-    <!-- <CustomInput on:keyup={() => updateTask(task.taskId)} inputValue={updatedTaskName}/> -->
+    <!-- <input type="text" use:focus bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId)}> -->
+    <CustomInput on:keyup={() => updateTask(task.taskId)} inputValue={updatedTaskName}/>
   {:else}
     <span id='taskName' on:click={() => showSubTasks(task)}>{task.taskName} </span>
     <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>

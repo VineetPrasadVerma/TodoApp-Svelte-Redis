@@ -52,7 +52,7 @@
     $TaskStore = searchedTasks
   }
 
-  let taskName = ''
+  // let taskName = ''
 
   async function addTask() {
     searchTasks(event)
@@ -68,11 +68,11 @@
         init: {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ taskName: taskName })
+          body: JSON.stringify({ taskName: event.target.value })
         }
       }
 
-      // event.target.value = ''
+      event.target.value = ''
 
       let createdTask = await fetchAPI(reqObj)
 
@@ -91,7 +91,7 @@
         showErrorPage = true
       }
 
-      taskName = ''
+      // taskName = ''
     }
   }
 
@@ -116,8 +116,8 @@
 
       <h1 id='todoHeading'>TODOS</h1>
 
-      <!-- <CustomInput placeholder=' Search | Add Tasks' on:keyup={() => addTask()} /> -->
-      <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
+      <CustomInput placeholder=' Search | Add Tasks' on:keyup={() => addTask()} />
+      <!-- <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}> -->
       
       {#each $TaskStore as task (task.taskId)}
         <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks on:handleError={handleError}/>
