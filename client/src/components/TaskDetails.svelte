@@ -3,7 +3,8 @@
   import Icon from 'fa-svelte'
   import { faTrash, faPencilAlt } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher } from 'svelte'
+  import CustomInput from '../shared/Input.svelte'
 
   export let task
 
@@ -25,7 +26,7 @@
       dispatch('updateAllTasks', tasks)
       return tasks
     } else {
-      if(tasks.taskCount === 0){
+      if(tasks){
         tasks = []
         return tasks
       }
@@ -46,7 +47,9 @@
     const result = await fetchAPI(reqObj)
     if(result){
       const tasks = await readTasksDB()
-      if(tasks) $TaskStore = tasks
+      if(tasks) {$TaskStore = tasks
+      console.log($TaskStore)
+      }
       else {
         $TaskStore = []
 
@@ -62,7 +65,7 @@
   async function updateTask(id) {
     if(event.keyCode === 13){
 
-      if(updatedTaskName === ''){
+      if(event.target.value === ''){
         event.target.placeholder = 'Can\'t add empty Task'
         return
       }
@@ -76,6 +79,8 @@
         }
       }
 
+      // updatedTaskName = event.target.value
+      
       const result = await fetchAPI(reqObj)
       if(result){
         const tasks = await readTasksDB()
@@ -113,6 +118,7 @@
 <div id={task.taskId}>
   {#if isEditing}
     <input type="text" use:focus bind:value={updatedTaskName} on:keyup={() => updateTask(task.taskId)}>
+    <!-- <CustomInput on:keyup={() => updateTask(task.taskId)} inputValue={updatedTaskName}/> -->
   {:else}
     <span id='taskName' on:click={() => showSubTasks(task)}>{task.taskName} </span>
     <span id='deleteIcon' on:click={() => deleteTask(task.taskId)}><Icon icon={faTrash}/></span>

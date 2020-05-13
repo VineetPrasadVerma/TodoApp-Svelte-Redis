@@ -5,6 +5,7 @@
   import { faTrash, faPencilAlt, faArrowCircleDown, faArrowCircleLeft } from '@fortawesome/free-solid-svg-icons/'
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import { createEventDispatcher } from 'svelte'
+  import CustomInput from '../shared/Input.svelte'
 
   const dispatch = createEventDispatcher()
 
@@ -80,7 +81,7 @@
     
     if(event.keyCode === 13){
 
-      if(updatedSubTaskName === ''){
+      if(event.target.value === ''){
         event.target.placeholder = 'Can\'t add empty Task'
         return
       }
@@ -90,10 +91,12 @@
         init: {
           method: 'PUT',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ name: updatedSubTaskName })
+          body: JSON.stringify({ name: event.target.value })
         }
       }
 
+      updatedSubTaskName = event.target.value
+      
       const response = await fetchAPI(reqObj)
       if(response){
         const subTasks = await readSubTasksDB()
@@ -221,7 +224,8 @@
 
 <div id={subTask.id}>
     {#if isEditing}
-      <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTaskName(subTask.id)}>
+      <!-- <input id="editInputField" type="text" use:focus bind:value={updatedSubTaskName} on:keyup={() => updateSubTaskName(subTask.id)}> -->
+      <CustomInput on:keyup={() => updateSubTaskName(subTask.id)} inputValue={updatedSubTaskName}/>
     {:else}
       
       <input id="completedCheckbox" type="checkbox" bind:checked={isCompleted} on:click={() => updateSubTask(subTask.id, 'completed', !isCompleted)}>
@@ -245,10 +249,10 @@
   div{
     padding: 8px;
   }
-
+/* 
   #editInputField{
     width: 100%;
-  }
+  } */
 
   #completedCheckbox{
     float: left;

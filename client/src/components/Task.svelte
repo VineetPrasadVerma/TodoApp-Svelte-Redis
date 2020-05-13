@@ -4,6 +4,7 @@
   import TaskDetails from './TaskDetails.svelte' 
   import {baseURL, fetchAPI} from '../shared/fetch.js'
   import Error from '../shared/Error.svelte'
+  import CustomInput from '../shared/Input.svelte' 
 
   let allTasks = []  
 
@@ -19,11 +20,12 @@
     }
 
     let tasks = await fetchAPI(reqObj)
+
     if (tasks != null && tasks.taskCount !== 0) {
       allTasks = tasks
       return tasks
     } else {
-      if(tasks.taskCount === 0){
+      if(tasks){
         tasks = []
         allTasks = tasks
         return tasks
@@ -56,8 +58,7 @@
     searchTasks(event)
 
     if(event.keyCode === 13){
-
-      if(taskName === ''){
+      if(event.target.value === ''){
         event.target.placeholder = 'Can\'t add empty Task'
         return
       }
@@ -71,10 +72,12 @@
         }
       }
 
+      // event.target.value = ''
+
       let createdTask = await fetchAPI(reqObj)
+
       if(createdTask){
         const tasks = await readTasksDB()
-
         if(tasks) $TaskStore = tasks
         else {
           $TaskStore = []
@@ -113,11 +116,12 @@
 
       <h1 id='todoHeading'>TODOS</h1>
 
+      <!-- <CustomInput placeholder=' Search | Add Tasks' on:keyup={() => addTask()} /> -->
       <input id="addTaskInput" use:focus placeholder=" Search | Add Tasks"  type="text" on:keyup={() => addTask()} bind:value={taskName}>
       
-        {#each $TaskStore as task (task.taskId)}
-          <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks on:handleError={handleError}/>
-        {/each}
+      {#each $TaskStore as task (task.taskId)}
+        <TaskDetails {task} on:updateAllTasks={updateAllTasks} on:showSubTasks on:handleError={handleError}/>
+      {/each}
   </div>
   {:else}
     <Error {message}/>

@@ -7,6 +7,7 @@
   import Icon from 'fa-svelte'
   import { faArrowCircleLeft, faTimes } from '@fortawesome/free-solid-svg-icons/'
   import Error from '../shared/Error.svelte'
+  import CustomInput from '../shared/Input.svelte'
 
   let showErrorPage = false
   let message = ''
@@ -76,14 +77,14 @@
     e.focus()
   }
 
-  let subTaskName = ''
+  // let subTaskName = ''
 
   async function addSubTask() {
     event.target.placeholder = 'Add Subtask'
     
     if(event.keyCode === 13){
 
-      if(subTaskName === ''){
+      if(event.target.value === ''){
         event.target.placeholder = 'Can\'t add empty SubTask'
         return
       }
@@ -93,9 +94,11 @@
         init: {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
-          body: JSON.stringify({ subTaskName: subTaskName })
+          body: JSON.stringify({ subTaskName: event.target.value })
         }
       }
+
+      event.target.value = ''
 
       let createdSubTask = await fetchAPI(reqObj)
 
@@ -114,7 +117,7 @@
         showErrorPage = true
       }
 
-      subTaskName = ''
+      // subTaskName = ''
     }
   }
 
@@ -188,8 +191,9 @@
 
     <h2 id='taskName'><span id='backIcon' on:click={() => showTasks()}><Icon icon={faArrowCircleLeft}/></span>{task.taskName}<span class='timesIcon' class:disable={isDisable} on:click={()=> clearCompletedSubTasks()} title="Clear Completed Task"><Icon icon={faTimes}/></span></h2>
 
-    <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}>
-    
+    <!-- <input id="addSubTaskInput" use:focus placeholder=" Add SubTasks"  type="text" on:keyup={() => addSubTask()} bind:value={subTaskName}> -->
+    <CustomInput placeholder=" Add SubTasks" on:keyup={() => addSubTask()}/>
+
     {#each $SubTaskStore as subTask (subTask.id)}
       <SubTaskDetails {subTask} {task} on:enableClearSubTaskButton={enableClearSubTaskButton} on:handleError={handleError}/>
     {/each}
@@ -206,9 +210,9 @@
     margin: 100px auto;
   }
   
-  #addSubTaskInput{
+  /* #addSubTaskInput{
       width: 100%;
-  }
+  } */
 
   #backIcon{
     float: left;
